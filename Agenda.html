@@ -1,0 +1,417 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claudia Nails Design – Agenda</title>
+  <style>
+    :root {
+      --primary: #d65a7a; /* Rosa mais forte e acessível */
+      --primary-light: #f4b6c2;
+      --bg-color: #fdf2f5;
+      --text-color: #4a4a4a;
+      --white: #ffffff;
+      --green: #4caf50;
+      --red: #ef5350;
+      --shadow: 0 4px 12px rgba(214, 90, 122, 0.15);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+    body {
+      margin: 0;
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding-bottom: 40px;
+    }
+
+    header {
+      background: var(--white);
+      padding: 24px;
+      text-align: center;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    header h1 { margin: 0; color: var(--primary); font-size: 1.5rem; }
+    header p { margin: 4px 0 0; color: #888; font-size: 0.9rem; }
+
+    main { max-width: 500px; margin: 0 auto; padding: 0 16px; }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,0.02);
+    }
+
+    h2 { margin-top: 0; color: var(--primary); font-size: 1.1rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 10px; margin-bottom: 16px; }
+
+    .form-group { margin-bottom: 12px; }
+    
+    label { display: block; font-size: 0.85rem; margin-bottom: 6px; font-weight: 600; color: #666; }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(214, 90, 122, 0.2);
+    }
+
+    button.btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button.btn-primary:hover { background: #b04360; }
+
+    /* Filtros */
+    .filtros { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+    
+    .filtros button {
+      flex: 1;
+      padding: 8px 12px;
+      background: transparent;
+      border: 1px solid var(--primary-light);
+      color: var(--primary);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .filtros button.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Lista */
+    .empty-state { text-align: center; color: #999; padding: 20px; font-style: italic; }
+
+    .agendamento {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-left: 4px solid var(--primary);
+      padding: 14px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      background: #f9f9f9;
+      transition: transform 0.2s;
+    }
+
+    .agendamento:hover { transform: translateY(-2px); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+    .agendamento.concluido {
+      border-left-color: var(--green);
+      background: #f1f8f1;
+      opacity: 0.7;
+    }
+
+    .agendamento.concluido h3 { text-decoration: line-through; }
+
+    .info h3 { margin: 0 0 4px 0; font-size: 1rem; color: #333; }
+    .info p { margin: 2px 0; font-size: 0.85rem; color: #666; }
+    .info .badge { 
+        display: inline-block; 
+        background: #eee; 
+        padding: 2px 6px; 
+        border-radius: 4px; 
+        font-size: 0.75rem; 
+        margin-top: 4px;
+    }
+
+    .acoes { display: flex; flex-direction: column; gap: 6px; }
+    
+    .btn-icon {
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: opacity 0.2s;
+    }
+
+    .concluir { background: #e8f5e9; color: var(--green); }
+    .remover { background: #ffebee; color: var(--red); }
+    .btn-icon:hover { opacity: 0.8; }
+
+    footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #aaa; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Claudia Nails Design</h1>
+    <p>Agenda de Atendimentos</p>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>✨ Novo Agendamento</h2>
+      <form id="form">
+        <div class="form-group">
+          <label for="cliente">Nome da Cliente</label>
+          <input id="cliente" required autocomplete="off" />
+        </div>
+        
+        <div class="form-group">
+          <label for="telefone">WhatsApp (Opcional)</label>
+          <input id="telefone" placeholder="(DD) 90000-0000" maxlength="15" onkeyup="mascaraTelefone(this)" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label for="data">Data</label>
+            <input type="date" id="data" required />
+          </div>
+          <div class="form-group">
+            <label for="hora">Horário</label>
+            <input type="time" id="hora" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="servico">Serviço</label>
+          <input id="servico" list="servicos-sugeridos" required placeholder="Ex: Manicure e Pedicure" />
+          <datalist id="servicos-sugeridos">
+            <option value="Manicure Simples">
+            <option value="Pedicure Simples">
+            <option value="Pé e Mão">
+            <option value="Alongamento em Gel">
+            <option value="Banho de Gel">
+            <option value="Manutenção">
+          </datalist>
+        </div>
+
+        <button type="submit" class="btn-primary">Agendar Horário</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>📅 Minha Agenda</h2>
+      
+      <div class="filtros">
+        <button onclick="mudarFiltro('hoje')" id="btn-hoje" class="active">Hoje</button>
+        <button onclick="mudarFiltro('amanha')" id="btn-amanha">Amanhã</button>
+        <button onclick="mudarFiltro('todos')" id="btn-todos">Todos</button>
+      </div>
+
+      <div id="lista"></div>
+    </div>
+  </main>
+
+  <footer>© 2024 Claudia Nails Design - Sistema de Gestão</footer>
+
+  <script>
+    // --- ESTADO & SELETORES ---
+    const form = document.getElementById('form');
+    const listaEl = document.getElementById('lista');
+    let filtroAtual = 'hoje';
+    let agendamentos = JSON.parse(localStorage.getItem('agendamentos')) || [];
+
+    // --- FUNÇÕES AUXILIARES ---
+    
+    // Gera ID único
+    const uuid = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
+
+    // Formata Data para BR (2024-01-01 -> 01/01/2024)
+    const formatarDataBR = (dataIso) => {
+        if(!dataIso) return '';
+        const [ano, mes, dia] = dataIso.split('-');
+        return `${dia}/${mes}/${ano}`;
+    };
+
+    // Máscara de Telefone
+    function mascaraTelefone(input) {
+        let v = input.value.replace(/\D/g,'');
+        v = v.replace(/^(\d{2})(\d)/g,"($1) $2");
+        v = v.replace(/(\d)(\d{4})$/,"$1-$2");
+        input.value = v;
+    }
+
+    // Previne XSS
+    const escapeHTML = (str) => {
+        const div = document.createElement('div');
+        div.innerText = str;
+        return div.innerHTML;
+    };
+
+    // Salva no LocalStorage
+    const salvarDados = () => {
+        localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+        renderizar();
+    };
+
+    // --- LÓGICA DE NEGÓCIO ---
+
+    function mudarFiltro(novoFiltro) {
+        filtroAtual = novoFiltro;
+        
+        // Atualiza UI dos botões
+        document.querySelectorAll('.filtros button').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`btn-${novoFiltro}`).classList.add('active');
+        
+        renderizar();
+    }
+
+    function adicionar(e) {
+        e.preventDefault();
+
+        const dataVal = document.getElementById('data').value;
+        const horaVal = document.getElementById('hora').value;
+
+        // Validação simples de conflito
+        const conflito = agendamentos.find(a => 
+            a.data === dataVal && a.hora === horaVal && !a.concluido
+        );
+
+        if (conflito) {
+            alert('⚠️ Já existe um cliente agendado para este dia e horário!');
+            return;
+        }
+
+        const novoAgendamento = {
+            id: uuid(),
+            cliente: document.getElementById('cliente').value,
+            telefone: document.getElementById('telefone').value,
+            data: dataVal,
+            hora: horaVal,
+            servico: document.getElementById('servico').value,
+            concluido: false,
+            criadoEm: new Date().toISOString()
+        };
+
+        agendamentos.push(novoAgendamento);
+        salvarDados();
+        form.reset();
+        
+        // Se agendou para hoje, garante que a visualização esteja em hoje ou todos
+        if(dataVal === getDataHojeISO() && filtroAtual === 'amanha') {
+             mudarFiltro('hoje');
+        } else {
+             renderizar();
+        }
+    }
+
+    function toggleConcluir(id) {
+        const index = agendamentos.findIndex(a => a.id === id);
+        if (index > -1) {
+            agendamentos[index].concluido = !agendamentos[index].concluido;
+            salvarDados();
+        }
+    }
+
+    function remover(id) {
+        if (confirm('Tem certeza que deseja apagar este agendamento?')) {
+            agendamentos = agendamentos.filter(a => a.id !== id);
+            salvarDados();
+        }
+    }
+
+    // --- RENDERIZAÇÃO ---
+
+    function getDataHojeISO() {
+        const d = new Date();
+        // Ajuste fuso horário simples para manter a data local correta
+        const offset = d.getTimezoneOffset() * 60000;
+        return new Date(d.getTime() - offset).toISOString().split('T')[0];
+    }
+    
+    function getDataAmanhaISO() {
+        const d = new Date();
+        d.setDate(d.getDate() + 1);
+        const offset = d.getTimezoneOffset() * 60000;
+        return new Date(d.getTime() - offset).toISOString().split('T')[0];
+    }
+
+    function renderizar() {
+        listaEl.innerHTML = '';
+        const hoje = getDataHojeISO();
+        const amanha = getDataAmanhaISO();
+
+        // 1. Filtrar
+        const listaFiltrada = agendamentos.filter(a => {
+            if (filtroAtual === 'hoje') return a.data === hoje;
+            if (filtroAtual === 'amanha') return a.data === amanha;
+            return true;
+        });
+
+        // 2. Ordenar (Data ASC, Hora ASC)
+        listaFiltrada.sort((a, b) => {
+            if (a.data !== b.data) return a.data.localeCompare(b.data);
+            return a.hora.localeCompare(b.hora);
+        });
+
+        // 3. Exibir
+        if (listaFiltrada.length === 0) {
+            listaEl.innerHTML = '<div class="empty-state">Nenhum agendamento encontrado para este período.</div>';
+            return;
+        }
+
+        listaFiltrada.forEach(a => {
+            const dataFormatada = formatarDataBR(a.data);
+            const linkWpp = a.telefone ? `https://wa.me/55${a.telefone.replace(/\D/g,'')}` : '#';
+            const displayTelefone = a.telefone ? `<a href="${linkWpp}" target="_blank" style="color:var(--primary);text-decoration:none">📞 ${escapeHTML(a.telefone)}</a>` : '';
+
+            const html = `
+                <div class="agendamento ${a.concluido ? 'concluido' : ''}">
+                    <div class="info">
+                        <h3>${escapeHTML(a.cliente)}</h3>
+                        <p><strong>${dataFormatada}</strong> às <strong>${a.hora}</strong></p>
+                        <p class="badge">${escapeHTML(a.servico)}</p>
+                        <div style="margin-top:4px; font-size: 0.8rem">${displayTelefone}</div>
+                    </div>
+                    <div class="acoes">
+                        <button class="btn-icon concluir" onclick="toggleConcluir('${a.id}')" title="Concluir/Reabrir">
+                            ${a.concluido ? '↩' : '✓'}
+                        </button>
+                        <button class="btn-icon remover" onclick="remover('${a.id}')" title="Excluir">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            `;
+            listaEl.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    // --- INICIALIZAÇÃO ---
+    form.addEventListener('submit', adicionar);
+    
+    // Define a data mínima do input para hoje (evita agendar no passado)
+    document.getElementById('data').min = getDataHojeISO();
+    
+    renderizar();
+
+  </script>
+</body>
+</html>

@@ -1,196 +1,208 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Claudia Nails">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3567/3567015.png">
-  <link rel="manifest" href="manifest.json">
+  <title>Claudia Nails</title>
   
-  <title>Claudia Nails Design</title>
   <style>
     :root {
       --primary: #d65a7a;
-      --bg-color: #f2f2f7; /* Estilo cinza claro iOS */
+      --ios-bg: #f2f2f7;
       --card-bg: #ffffff;
-      --text-main: #000000;
-      --text-sub: #8e8e93;
-      --radius: 12px;
     }
 
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-
-    body {
-      margin: 0;
-      background: var(--bg-color);
-      color: var(--text-main);
-      -webkit-tap-highlight-color: transparent;
-      padding-top: env(safe-area-inset-top); /* Margem para o Notch do iPhone 14 */
+    /* Reseta o scroll e evita o efeito de "espelhamento" */
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      padding: 0; 
+      background: var(--ios-bg);
+      overflow-x: hidden;
+      -webkit-user-select: none; /* Evita selecionar texto sem querer no app */
     }
 
+    * { box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
+
+    /* Ajuste para o Notch do iPhone 14 */
     header {
-      padding: 20px 16px;
-      background: var(--bg-color);
+      padding: calc(env(safe-area-inset-top) + 20px) 20px 10px 20px;
+      background: var(--ios-bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+    header h1 { margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px; }
 
-    main { padding: 16px; max-width: 600px; margin: 0 auto; }
+    main { 
+      padding: 10px 16px 100px 16px; /* Espaço no fim para não cortar */
+    }
 
     .card {
       background: var(--card-bg);
-      border-radius: var(--radius);
+      border-radius: 15px;
       padding: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
-    h2 { font-size: 17px; margin-top: 0; margin-bottom: 12px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
-
-    .form-group { margin-bottom: 15px; border-bottom: 0.5px solid #eee; padding-bottom: 8px; }
-    label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; color: var(--primary); }
-    input, select {
-      width: 100%; border: none; font-size: 17px; outline: none; padding: 4px 0; background: transparent;
+    /* Estilo de formulário mais limpo */
+    .form-group { margin-bottom: 15px; }
+    label { font-size: 13px; font-weight: 600; color: #888; text-transform: uppercase; margin-left: 4px; }
+    input {
+      width: 100%;
+      background: #f9f9fb;
+      border: 1px solid #eee;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 16px; /* Evita zoom automático no iPhone ao clicar */
+      margin-top: 5px;
     }
 
     button.btn-primary {
-      width: 100%; padding: 14px; background: var(--primary); color: white;
-      border: none; border-radius: var(--radius); font-size: 17px; font-weight: 600;
-      margin-top: 10px;
+      width: 100%;
+      padding: 15px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      margin-top: 5px;
     }
 
-    /* Filtros estilo Segmented Control iOS */
+    /* Filtros (Segmented Control estilo iOS) */
     .filtros {
-      display: flex; background: #e3e3e6; padding: 2px; border-radius: 9px; margin-bottom: 20px;
+      display: flex;
+      background: #e3e3e8;
+      padding: 3px;
+      border-radius: 10px;
+      margin-bottom: 20px;
     }
     .filtros button {
-      flex: 1; border: none; padding: 6px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; background: transparent;
+      flex: 1; border: none; padding: 8px; border-radius: 8px;
+      font-size: 14px; font-weight: 500; background: transparent; transition: 0.2s;
     }
-    .filtros button.active { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .filtros button.active { background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-    .agendamento {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 0; border-bottom: 0.5px solid #eee;
+    /* Lista de Itens */
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0f0f0;
     }
-    .agendamento:last-child { border-bottom: none; }
-    .info h3 { margin: 0; font-size: 17px; }
-    .info p { margin: 2px 0; font-size: 14px; color: var(--text-sub); }
-    .concluido h3 { text-decoration: line-through; color: var(--text-sub); }
+    .item:last-child { border-bottom: none; }
+    .item-info h3 { margin: 0; font-size: 17px; color: #000; }
+    .item-info p { margin: 2px 0 0; font-size: 14px; color: #8e8e93; }
 
-    .acoes { display: flex; gap: 10px; }
-    .btn-circle {
-      width: 32px; height: 32px; border-radius: 50%; border: none;
-      display: flex; align-items: center; justify-content: center; font-size: 16px;
-    }
-    .btn-check { background: #e1f5fe; color: #03a9f4; }
-    .btn-check.done { background: #e8f5e9; color: #4caf50; }
-    .btn-del { background: #ffebee; color: #ef5350; }
+    .item.concluido h3 { text-decoration: line-through; color: #c7c7cc; }
 
-    .notif-badge {
-        background: #ff3b30; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; margin-left: 8px; vertical-align: middle;
+    .btn-done {
+        background: #f1f1f7; color: var(--primary); border: none;
+        width: 35px; height: 35px; border-radius: 50%; font-weight: bold;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Claudia Nails <span id="count-hoje" class="notif-badge">0</span></h1>
+    <h1>Agenda</h1>
   </header>
 
   <main>
     <div class="card">
-      <h2>Novo Agendamento</h2>
       <form id="form">
         <div class="form-group">
-          <label>Cliente</label>
-          <input id="cliente" required placeholder="Nome completo" />
+          <label>Nome da Cliente</label>
+          <input id="cliente" required placeholder="Ex: Maria Silva" />
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div class="form-group">
-                <label>Data</label>
-                <input type="date" id="data" required />
-            </div>
-            <div class="form-group">
-                <label>Hora</label>
-                <input type="time" id="hora" required />
-            </div>
+        <div style="display: flex; gap: 10px;">
+           <div class="form-group" style="flex: 2;">
+              <label>Data</label>
+              <input type="date" id="data" required />
+           </div>
+           <div class="form-group" style="flex: 1;">
+              <label>Hora</label>
+              <input type="time" id="hora" required />
+           </div>
         </div>
         <div class="form-group">
           <label>Serviço</label>
-          <input id="servico" list="servicos-sugeridos" required placeholder="Ex: Banho de Gel" />
+          <input id="servico" placeholder="Ex: Unha em Gel" />
         </div>
-        <button type="submit" class="btn-primary">Reservar Horário</button>
+        <button type="submit" class="btn-primary">Agendar Horário</button>
       </form>
     </div>
 
     <div class="filtros">
       <button onclick="mudarFiltro('hoje')" id="btn-hoje" class="active">Hoje</button>
-      <button onclick="mudarFiltro('amanha')" id="btn-amanha">Amanhã</button>
       <button onclick="mudarFiltro('todos')" id="btn-todos">Todos</button>
     </div>
 
-    <div id="lista"></div>
+    <div class="card" id="lista-card">
+      <div id="lista"></div>
+    </div>
   </main>
-
-  <datalist id="servicos-sugeridos">
-    <option value="Manicure Simples">
-    <option value="Alongamento em Gel">
-    <option value="Manutenção">
-    <option value="Pé e Mão">
-  </datalist>
 
   <script>
     let agendamentos = JSON.parse(localStorage.getItem('agendamentos')) || [];
     let filtroAtual = 'hoje';
 
-    // Registro do Service Worker para PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => console.log("SW Fail"));
-    }
+    // Bloqueia o "scroll elástico" que às vezes causa duplicidade visual no Safari
+    document.addEventListener('touchmove', function (e) {
+      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        // e.preventDefault(); // Ativar apenas se quiser travar o scroll totalmente
+      }
+    }, { passive: false });
 
-    // Pedir permissão para notificações
-    function pedirPermissaoNotificacao() {
-        if ("Notification" in window) {
-            Notification.requestPermission();
-        }
-    }
+    function renderizar() {
+      const lista = document.getElementById('lista');
+      const hoje = new Date().toISOString().split('T')[0];
+      
+      const filtrados = agendamentos.filter(a => {
+        return filtroAtual === 'hoje' ? a.data === hoje : true;
+      }).sort((a,b) => a.hora.localeCompare(b.hora));
 
-    function salvar() {
+      lista.innerHTML = filtrados.length ? '' : '<p style="text-align:center;color:#999;padding:20px;">Sem agendamentos.</p>';
+      
+      filtrados.forEach(a => {
+        lista.innerHTML += `
+          <div class="item ${a.concluido ? 'concluido' : ''}">
+            <div class="item-info">
+              <h3>${a.cliente}</h3>
+              <p>${a.hora} • ${a.servico}</p>
+            </div>
+            <button class="btn-done" onclick="toggle('${a.id}')">✓</button>
+          </div>
+        `;
+      });
       localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+    }
+
+    function toggle(id) {
+      const idx = agendamentos.findIndex(a => a.id == id);
+      agendamentos[idx].concluido = !agendamentos[idx].concluido;
       renderizar();
     }
 
-    function adicionar(e) {
+    document.getElementById('form').onsubmit = (e) => {
       e.preventDefault();
-      const novo = {
+      agendamentos.push({
         id: Date.now(),
         cliente: document.getElementById('cliente').value,
         data: document.getElementById('data').value,
         hora: document.getElementById('hora').value,
         servico: document.getElementById('servico').value,
         concluido: false
-      };
-
-      agendamentos.push(novo);
-      salvar();
+      });
       e.target.reset();
-      pedirPermissaoNotificacao();
-    }
-
-    function toggle(id) {
-      const idx = agendamentos.findIndex(a => a.id === id);
-      agendamentos[idx].concluido = !agendamentos[idx].concluido;
-      salvar();
-    }
-
-    function remover(id) {
-      if(confirm("Apagar?")) {
-        agendamentos = agendamentos.filter(a => a.id !== id);
-        salvar();
-      }
-    }
+      renderizar();
+    };
 
     function mudarFiltro(f) {
       filtroAtual = f;
@@ -199,273 +211,6 @@
       renderizar();
     }
 
-    function renderizar() {
-      const lista = document.getElementById('lista');
-      const hoje = new Date().toISOString().split('T')[0];
-      
-      const filtrados = agendamentos.filter(a => {
-        if (filtroAtual === 'hoje') return a.data === hoje;
-        if (filtroAtual === 'todos') return true;
-        return true; 
-      }).sort((a,b) => a.hora.localeCompare(b.hora));
-
-      document.getElementById('count-hoje').innerText = agendamentos.filter(a => a.data === hoje && !a.concluido).length;
-
-      lista.innerHTML = filtrados.length ? '' : '<p style="text-align:center; color:#888;">Nada agendado.</p>';
-      
-      filtrados.forEach(a => {
-        lista.innerHTML += `
-          <div class="agendamento ${a.concluido ? 'concluido' : ''}">
-            <div class="info">
-              <h3>${a.cliente}</h3>
-              <p>${a.hora} • ${a.servico}</p>
-            </div>
-            <div class="acoes">
-              <button class="btn-circle btn-check ${a.concluido ? 'done' : ''}" onclick="toggle(${a.id})">✓</button>
-              <button class="btn-circle btn-del" onclick="remover(${a.id})">✕</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    document.getElementById('form').addEventListener('submit', adicionar);
-    renderizar();
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Claudia Nails">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3567/3567015.png">
-  <link rel="manifest" href="manifest.json">
-  
-  <title>Claudia Nails Design</title>
-  <style>
-    :root {
-      --primary: #d65a7a;
-      --bg-color: #f2f2f7; /* Estilo cinza claro iOS */
-      --card-bg: #ffffff;
-      --text-main: #000000;
-      --text-sub: #8e8e93;
-      --radius: 12px;
-    }
-
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-
-    body {
-      margin: 0;
-      background: var(--bg-color);
-      color: var(--text-main);
-      -webkit-tap-highlight-color: transparent;
-      padding-top: env(safe-area-inset-top); /* Margem para o Notch do iPhone 14 */
-    }
-
-    header {
-      padding: 20px 16px;
-      background: var(--bg-color);
-    }
-
-    header h1 { margin: 0; font-size: 28px; font-weight: 700; }
-
-    main { padding: 16px; max-width: 600px; margin: 0 auto; }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    h2 { font-size: 17px; margin-top: 0; margin-bottom: 12px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
-
-    .form-group { margin-bottom: 15px; border-bottom: 0.5px solid #eee; padding-bottom: 8px; }
-    label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; color: var(--primary); }
-    input, select {
-      width: 100%; border: none; font-size: 17px; outline: none; padding: 4px 0; background: transparent;
-    }
-
-    button.btn-primary {
-      width: 100%; padding: 14px; background: var(--primary); color: white;
-      border: none; border-radius: var(--radius); font-size: 17px; font-weight: 600;
-      margin-top: 10px;
-    }
-
-    /* Filtros estilo Segmented Control iOS */
-    .filtros {
-      display: flex; background: #e3e3e6; padding: 2px; border-radius: 9px; margin-bottom: 20px;
-    }
-    .filtros button {
-      flex: 1; border: none; padding: 6px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; background: transparent;
-    }
-    .filtros button.active { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-
-    .agendamento {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 0; border-bottom: 0.5px solid #eee;
-    }
-    .agendamento:last-child { border-bottom: none; }
-    .info h3 { margin: 0; font-size: 17px; }
-    .info p { margin: 2px 0; font-size: 14px; color: var(--text-sub); }
-    .concluido h3 { text-decoration: line-through; color: var(--text-sub); }
-
-    .acoes { display: flex; gap: 10px; }
-    .btn-circle {
-      width: 32px; height: 32px; border-radius: 50%; border: none;
-      display: flex; align-items: center; justify-content: center; font-size: 16px;
-    }
-    .btn-check { background: #e1f5fe; color: #03a9f4; }
-    .btn-check.done { background: #e8f5e9; color: #4caf50; }
-    .btn-del { background: #ffebee; color: #ef5350; }
-
-    .notif-badge {
-        background: #ff3b30; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; margin-left: 8px; vertical-align: middle;
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <h1>Claudia Nails <span id="count-hoje" class="notif-badge">0</span></h1>
-  </header>
-
-  <main>
-    <div class="card">
-      <h2>Novo Agendamento</h2>
-      <form id="form">
-        <div class="form-group">
-          <label>Cliente</label>
-          <input id="cliente" required placeholder="Nome completo" />
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div class="form-group">
-                <label>Data</label>
-                <input type="date" id="data" required />
-            </div>
-            <div class="form-group">
-                <label>Hora</label>
-                <input type="time" id="hora" required />
-            </div>
-        </div>
-        <div class="form-group">
-          <label>Serviço</label>
-          <input id="servico" list="servicos-sugeridos" required placeholder="Ex: Banho de Gel" />
-        </div>
-        <button type="submit" class="btn-primary">Reservar Horário</button>
-      </form>
-    </div>
-
-    <div class="filtros">
-      <button onclick="mudarFiltro('hoje')" id="btn-hoje" class="active">Hoje</button>
-      <button onclick="mudarFiltro('amanha')" id="btn-amanha">Amanhã</button>
-      <button onclick="mudarFiltro('todos')" id="btn-todos">Todos</button>
-    </div>
-
-    <div id="lista"></div>
-  </main>
-
-  <datalist id="servicos-sugeridos">
-    <option value="Manicure Simples">
-    <option value="Alongamento em Gel">
-    <option value="Manutenção">
-    <option value="Pé e Mão">
-  </datalist>
-
-  <script>
-    let agendamentos = JSON.parse(localStorage.getItem('agendamentos')) || [];
-    let filtroAtual = 'hoje';
-
-    // Registro do Service Worker para PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => console.log("SW Fail"));
-    }
-
-    // Pedir permissão para notificações
-    function pedirPermissaoNotificacao() {
-        if ("Notification" in window) {
-            Notification.requestPermission();
-        }
-    }
-
-    function salvar() {
-      localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
-      renderizar();
-    }
-
-    function adicionar(e) {
-      e.preventDefault();
-      const novo = {
-        id: Date.now(),
-        cliente: document.getElementById('cliente').value,
-        data: document.getElementById('data').value,
-        hora: document.getElementById('hora').value,
-        servico: document.getElementById('servico').value,
-        concluido: false
-      };
-
-      agendamentos.push(novo);
-      salvar();
-      e.target.reset();
-      pedirPermissaoNotificacao();
-    }
-
-    function toggle(id) {
-      const idx = agendamentos.findIndex(a => a.id === id);
-      agendamentos[idx].concluido = !agendamentos[idx].concluido;
-      salvar();
-    }
-
-    function remover(id) {
-      if(confirm("Apagar?")) {
-        agendamentos = agendamentos.filter(a => a.id !== id);
-        salvar();
-      }
-    }
-
-    function mudarFiltro(f) {
-      filtroAtual = f;
-      document.querySelectorAll('.filtros button').forEach(b => b.classList.remove('active'));
-      document.getElementById(`btn-${f}`).classList.add('active');
-      renderizar();
-    }
-
-    function renderizar() {
-      const lista = document.getElementById('lista');
-      const hoje = new Date().toISOString().split('T')[0];
-      
-      const filtrados = agendamentos.filter(a => {
-        if (filtroAtual === 'hoje') return a.data === hoje;
-        if (filtroAtual === 'todos') return true;
-        return true; 
-      }).sort((a,b) => a.hora.localeCompare(b.hora));
-
-      document.getElementById('count-hoje').innerText = agendamentos.filter(a => a.data === hoje && !a.concluido).length;
-
-      lista.innerHTML = filtrados.length ? '' : '<p style="text-align:center; color:#888;">Nada agendado.</p>';
-      
-      filtrados.forEach(a => {
-        lista.innerHTML += `
-          <div class="agendamento ${a.concluido ? 'concluido' : ''}">
-            <div class="info">
-              <h3>${a.cliente}</h3>
-              <p>${a.hora} • ${a.servico}</p>
-            </div>
-            <div class="acoes">
-              <button class="btn-circle btn-check ${a.concluido ? 'done' : ''}" onclick="toggle(${a.id})">✓</button>
-              <button class="btn-circle btn-del" onclick="remover(${a.id})">✕</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    document.getElementById('form').addEventListener('submit', adicionar);
     renderizar();
   </script>
 </body>

@@ -1,0 +1,15 @@
+{
+  "name": "Claudia Nails Design",
+  "short_name": "ClaudiaNails",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f2f2f7",
+  "theme_color": "#d65a7a",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3567/3567015.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
